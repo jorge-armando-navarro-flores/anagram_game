@@ -1,8 +1,12 @@
-import 'package:english_words/english_words.dart';
+import 'package:flutter/services.dart' show rootBundle;
+
+
 
 class AnagramDictionary{
-  Set<String> wordSet = all.toSet();
+  List<String> wordList = [];
+  Set<String> wordSet = {};
   Map lettersToWord = {};
+  String data = '';
 
 
   String sortLetters(String word){
@@ -12,16 +16,22 @@ class AnagramDictionary{
     return wordCharacters.join();
   }
 
-  getLettersToWord(){
+  getFileData(String path) async {
+    this.data = await rootBundle.loadString(path);
+    this.wordList = this.data.split('\n');
+    this.wordSet =  this.wordList.toSet();
     wordSet.forEach((String word) {
       String key = sortLetters(word);
-      if(!lettersToWord.containsKey(key)){
-        lettersToWord[key] = [word];
+      if(!this.lettersToWord.containsKey(key)){
+        this.lettersToWord[key] = {word};
       }else{
-        lettersToWord[key].add(word);
+        this.lettersToWord[key].add(word);
       }
 
     });
+
   }
+
+
 
 }

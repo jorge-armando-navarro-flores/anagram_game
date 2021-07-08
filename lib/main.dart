@@ -1,5 +1,8 @@
+import 'package:anagram_game/AnagramDictionary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+AnagramDictionary anagramDictionary = AnagramDictionary();
 
 void main() {
   runApp(MyApp());
@@ -31,6 +34,7 @@ class _AnagramGameState extends State<AnagramGame> {
   List<Text> wordsTyped = [];
   @override
   Widget build(BuildContext context) {
+    anagramDictionary.getFileData("assets/words.txt");
     return Scaffold(
       appBar: AppBar(
         title: Text("Anagram game"),
@@ -51,16 +55,17 @@ class _AnagramGameState extends State<AnagramGame> {
                 onEditingComplete: (){
                   setState(() {
                     wordsTyped.add(Text(textControl.text));
-                    textControl.clear();
-                  });
 
+                  });
+                  print(anagramDictionary.lettersToWord["apt"]);
+                  textControl.clear();
 
                 }
               ),
             ),
             Column(
 
-              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: wordsTyped,
             )
 
