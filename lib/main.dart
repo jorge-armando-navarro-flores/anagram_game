@@ -31,10 +31,13 @@ class AnagramGame extends StatefulWidget {
 
 class _AnagramGameState extends State<AnagramGame> {
   TextEditingController  textControl = TextEditingController();
+
   List<Text> wordsTyped = [];
+
   @override
   Widget build(BuildContext context) {
     anagramDictionary.getFileData("assets/words.txt");
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Anagram game"),
@@ -53,12 +56,30 @@ class _AnagramGameState extends State<AnagramGame> {
               child: TextField(
                 controller: textControl,
                 onEditingComplete: (){
+                  // String f = String.fromCharCode(97);
                   setState(() {
-                    wordsTyped.add(Text(textControl.text));
+                    String word = textControl.text;
+
+                    if(anagramDictionary.isGoodWord(word)){
+                      wordsTyped.add(Text(word,
+                        style: TextStyle(
+                          color: Colors.green
+                        ),
+                      ));
+                    }else{
+                      wordsTyped.add(Text("X $word",
+                        style: TextStyle(
+                            color: Colors.red
+                        ),
+                      ));
+                    }
+
 
                   });
-                  print(anagramDictionary.lettersToWord["apt"]);
+                  print(anagramDictionary.getAnagramsWithOneMoreLetter("post"));
+
                   textControl.clear();
+
 
                 }
               ),
