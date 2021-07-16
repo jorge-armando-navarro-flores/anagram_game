@@ -39,6 +39,7 @@ class _AnagramGameState extends State<AnagramGame> {
   IconData playAnswers = CupertinoIcons.question;
 
 
+
   void getDictionary() async{
     await anagramDictionary.getFileData("assets/words.txt");
     anagramDictionary.pickGoodStarterWord();
@@ -68,47 +69,59 @@ class _AnagramGameState extends State<AnagramGame> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Find as many words as possible "
-                "that can be performed by adding one letter"
-                "to ${pickedWord.toUpperCase()} ( but that no contain the substring $pickedWord "
-                "Hit Play to start again"),
-            Padding(
-              padding: EdgeInsets.only(bottom: 10),
-              child: TextField(
-                controller: textControl,
-                onEditingComplete: (){
-                  // String f = String.fromCharCode(97);
-                  setState(() {
-                    String word = textControl.text;
+            Expanded(
+              flex: 1,
+              child: Text("Find as many words as possible "
+                  "that can be performed by adding one letter"
+                  "to ${pickedWord.toUpperCase()} ( but that no contain the substring $pickedWord "
+                  "Hit Play to start again"),
+            ),
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: TextField(
+                  controller: textControl,
+                  onEditingComplete: (){
+                    // String f = String.fromCharCode(97);
+                    setState(() {
+                      String word = textControl.text;
 
-                    if(anagramDictionary.isGoodWord(word)){
-                      wordsTyped.add(Text(word,
-                        style: TextStyle(
-                          color: Colors.green
-                        ),
-                      ));
-                    }else{
-                      wordsTyped.add(Text("X $word",
-                        style: TextStyle(
-                            color: Colors.red
-                        ),
-                      ));
-                    }
+                      if(anagramDictionary.isGoodWord(word)){
+                        wordsTyped.add(Text(word,
+                          style: TextStyle(
+                            color: Colors.green
+                          ),
+                        ));
+                      }else{
+                        wordsTyped.add(Text("X $word",
+                          style: TextStyle(
+                              color: Colors.red
+                          ),
+                        ));
+                      }
 
 
-                  });
-                  print(anagramDictionary.getAnagramsWithOneMoreLetter(pickedWord));
+                    });
+                    print(anagramDictionary.getAnagramsWithOneMoreLetter(pickedWord));
 
-                  textControl.clear();
+                    textControl.clear();
 
 
-                }
+                  }
+                ),
               ),
             ),
-            Column(
+            Expanded(
+              flex: 5,
+              child: ListView.builder(
+                itemCount: wordsTyped.length,
+                itemBuilder: (BuildContext context, int index){
+                  return wordsTyped[index];
+                },
 
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: wordsTyped,
+
+              ),
             )
 
           ],
@@ -120,10 +133,14 @@ class _AnagramGameState extends State<AnagramGame> {
 
 
             setState(() {
+
               if(gameMode == Mode.start){
                 List<String> anagramsWithOneMoreLetter = anagramDictionary.getAnagramsWithOneMoreLetter(pickedWord);
                 anagramsWithOneMoreLetter.forEach((String word) {
-                  wordsTyped.add(Text(word));
+                  if(anagramDictionary.isGoodWord(word)){
+                    wordsTyped.add(Text(word));
+                  }
+
                 });
                 playAnswers = CupertinoIcons.play_arrow_solid;
                 gameMode = Mode.finish;
