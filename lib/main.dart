@@ -2,7 +2,7 @@ import 'package:anagram_game/AnagramDictionary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-AnagramDictionary anagramDictionary = AnagramDictionary();
+
 
 void main() {
   runApp(MyApp());
@@ -31,14 +31,32 @@ class AnagramGame extends StatefulWidget {
 
 class _AnagramGameState extends State<AnagramGame> {
   TextEditingController  textControl = TextEditingController();
-
+  AnagramDictionary anagramDictionary = AnagramDictionary();
+  String pickedWord ='';
   List<Text> wordsTyped = [];
+
+
+  void getDictionary() async{
+    await anagramDictionary.getFileData("assets/words.txt");
+    anagramDictionary.pickGoodStarterWord();
+    setState(() {
+      pickedWord = anagramDictionary.pickedWord;
+    });
+
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDictionary();
+
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    anagramDictionary.getFileData("assets/words.txt");
-
-    return Scaffold(
+      return Scaffold(
       appBar: AppBar(
         title: Text("Anagram game"),
       ),
@@ -49,7 +67,7 @@ class _AnagramGameState extends State<AnagramGame> {
           children: [
             Text("Find as many words as possible "
                 "that can be performed by adding one letter"
-                "to BADGE ( but that no contain the substring badge "
+                "to ${pickedWord.toUpperCase()} ( but that no contain the substring $pickedWord "
                 "Hit Play to start again"),
             Padding(
               padding: EdgeInsets.only(bottom: 10),
@@ -76,7 +94,7 @@ class _AnagramGameState extends State<AnagramGame> {
 
 
                   });
-                  print(anagramDictionary.getAnagramsWithOneMoreLetter("post"));
+                  print(anagramDictionary.getAnagramsWithOneMoreLetter(pickedWord));
 
                   textControl.clear();
 

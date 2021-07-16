@@ -1,12 +1,15 @@
 import 'package:flutter/services.dart' show rootBundle;
-
+import 'dart:math';
 
 
 class AnagramDictionary{
   List<String> wordList = [];
   Set<String> wordSet = {};
   Map lettersToWord = {};
+  Map sizeToWords ={};
   String data = '';
+  String pickedWord = "";
+  int defaultWordLength = 4;
 
 
   String sortLetters(String word){
@@ -16,7 +19,7 @@ class AnagramDictionary{
     return wordCharacters.join();
   }
 
-  getFileData(String path) async {
+  Future<void> getFileData(String path) async {
     this.data = await rootBundle.loadString(path);
     this.wordList = this.data.split('\n');
     this.wordSet =  this.wordList.toSet();
@@ -28,7 +31,17 @@ class AnagramDictionary{
         this.lettersToWord[key].add(word);
       }
 
+      int wordSize = word.length;
+      if(!this.sizeToWords.containsKey(wordSize)){
+        this.sizeToWords[wordSize] = [word];
+      }else{
+        this.sizeToWords[wordSize].add(word);
+      }
+
     });
+
+
+
 
   }
 
@@ -38,7 +51,7 @@ class AnagramDictionary{
   }
 
   bool isGoodWord(String word){
-    if(this.wordSet.contains(word) && !word.contains("post")) {
+    if(this.wordSet.contains(word) && !word.contains(pickedWord) && word.length > defaultWordLength) {
       return true;
     }else{
       return false;
@@ -47,7 +60,7 @@ class AnagramDictionary{
 
   List<String> getAnagramsWithOneMoreLetter(String word){
     List<String> anagramsWithOneMoreLetter = [];
-    List<String> alphabet =["s","o","n","p","t"];
+    List<String> alphabet =["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
     alphabet.forEach((String char) {
       String key = sortLetters(word + char);
       if (this.lettersToWord.containsKey(key)){
@@ -56,6 +69,16 @@ class AnagramDictionary{
     });
 
     return anagramsWithOneMoreLetter;
+  }
+
+  pickGoodStarterWord(){
+    List<String> words = sizeToWords[defaultWordLength];
+    String word = '';
+    word = words[Random().nextInt(words.length)];
+    // while(word.length < 3 || word.length > 7){
+    //   word = wordList[Random().nextInt(wordList.length)];
+    // }
+    this.pickedWord = word;
   }
 
 
