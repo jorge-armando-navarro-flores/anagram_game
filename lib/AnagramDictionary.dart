@@ -39,10 +39,7 @@ class AnagramDictionary{
       }
 
     });
-
-
-
-
+    
   }
 
   List<String> getAnagrams(String word){

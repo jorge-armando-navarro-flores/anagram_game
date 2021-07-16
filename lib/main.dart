@@ -1,9 +1,10 @@
 import 'package:anagram_game/AnagramDictionary.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 
-
+enum Mode { start, finish }
 void main() {
   runApp(MyApp());
 }
@@ -34,6 +35,8 @@ class _AnagramGameState extends State<AnagramGame> {
   AnagramDictionary anagramDictionary = AnagramDictionary();
   String pickedWord ='';
   List<Text> wordsTyped = [];
+  Mode gameMode = Mode.start;
+  IconData playAnswers = CupertinoIcons.question;
 
 
   void getDictionary() async{
@@ -111,6 +114,31 @@ class _AnagramGameState extends State<AnagramGame> {
           ],
         ),
       ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(playAnswers),
+          onPressed: (){
+
+
+            setState(() {
+              if(gameMode == Mode.start){
+                List<String> anagramsWithOneMoreLetter = anagramDictionary.getAnagramsWithOneMoreLetter(pickedWord);
+                anagramsWithOneMoreLetter.forEach((String word) {
+                  wordsTyped.add(Text(word));
+                });
+                playAnswers = CupertinoIcons.play_arrow_solid;
+                gameMode = Mode.finish;
+              }else if(gameMode == Mode.finish){
+                wordsTyped = [];
+                anagramDictionary.pickGoodStarterWord();
+                pickedWord = anagramDictionary.pickedWord;
+                playAnswers = CupertinoIcons.question;
+                gameMode = Mode.start;
+              }
+
+            });
+
+          },
+        ),
     );
   }
 }
