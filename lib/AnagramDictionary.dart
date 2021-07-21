@@ -71,11 +71,27 @@ class AnagramDictionary{
   pickGoodStarterWord(){
     List<String> words = sizeToWords[defaultWordLength];
     String word = '';
-    word = words[Random().nextInt(words.length)];
-    // while(word.length < 3 || word.length > 7){
-    //   word = wordList[Random().nextInt(wordList.length)];
-    // }
-    this.pickedWord = word;
+    int answerNumber = 0;
+    while(answerNumber < 2){
+      word = words[Random().nextInt(words.length)];
+      this.pickedWord = word;
+      answerNumber = getAnswersNumber(word);
+    }
+
+    print(answerNumber);
+  }
+
+  int getAnswersNumber(String word){
+    int answersNumber = 0;
+    List<String> anagramsWithOneMoreLetter = getAnagramsWithOneMoreLetter(word);
+    print(anagramsWithOneMoreLetter);
+    anagramsWithOneMoreLetter.forEach((String answer) {
+      if(isGoodWord(answer)){
+        answersNumber++;
+      }
+
+    });
+    return answersNumber;
   }
 
 
