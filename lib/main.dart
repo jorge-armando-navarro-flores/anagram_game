@@ -1,4 +1,5 @@
 import 'package:anagram_game/AnagramDictionary.dart';
+import 'package:anagram_game/file_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -32,7 +33,7 @@ class AnagramGame extends StatefulWidget {
 
 class _AnagramGameState extends State<AnagramGame> {
   TextEditingController  textControl = TextEditingController();
-  AnagramDictionary anagramDictionary = AnagramDictionary();
+  AnagramDictionary? anagramDictionary;
   String pickedWord ='';
   List<Text> wordsTyped = [];
   Mode gameMode = Mode.start;
@@ -40,19 +41,32 @@ class _AnagramGameState extends State<AnagramGame> {
 
 
 
-  void getDictionary() async{
-    await anagramDictionary.getFileData("assets/words.txt");
-    anagramDictionary.pickGoodStarterWord();
+  // void getDictionary() async{
+  //   await anagramDictionary.getFileData("assets/words.txt");
+  //   anagramDictionary.pickGoodStarterWord();
+  //   setState(() {
+  //     pickedWord = anagramDictionary.pickedWord;
+  //   });
+  //
+  // }
+
+  void getFileData() async{
+    FileData fileData = FileData("assets/words.txt");
+    String data = await fileData.getData();
     setState(() {
-      pickedWord = anagramDictionary.pickedWord;
+      anagramDictionary = AnagramDictionary(data);
+      pickedWord = anagramDictionary!.pickedWord;
     });
 
+
+
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDictionary();
+    getFileData();
 
   }
 
@@ -87,7 +101,7 @@ class _AnagramGameState extends State<AnagramGame> {
                     setState(() {
                       String word = textControl.text;
 
-                      if(anagramDictionary.isGoodWord(word)){
+                      if(anagramDictionary!.isGoodWord(word)){
                         wordsTyped.add(Text(word,
                           style: TextStyle(
                             color: Colors.green
@@ -103,7 +117,7 @@ class _AnagramGameState extends State<AnagramGame> {
 
 
                     });
-                    print(anagramDictionary.getAnagramsWithOneMoreLetter(pickedWord));
+                    print(anagramDictionary!.getAnagramsWithOneMoreLetter(pickedWord));
 
                     textControl.clear();
 
@@ -135,9 +149,9 @@ class _AnagramGameState extends State<AnagramGame> {
             setState(() {
 
               if(gameMode == Mode.start){
-                List<String> anagramsWithOneMoreLetter = anagramDictionary.getAnagramsWithOneMoreLetter(pickedWord);
+                List<String> anagramsWithOneMoreLetter = anagramDictionary!.getAnagramsWithOneMoreLetter(pickedWord);
                 anagramsWithOneMoreLetter.forEach((String word) {
-                  if(anagramDictionary.isGoodWord(word)){
+                  if(anagramDictionary!.isGoodWord(word)){
                     wordsTyped.add(Text(word));
                   }
 
@@ -146,8 +160,8 @@ class _AnagramGameState extends State<AnagramGame> {
                 gameMode = Mode.finish;
               }else if(gameMode == Mode.finish){
                 wordsTyped = [];
-                anagramDictionary.pickGoodStarterWord();
-                pickedWord = anagramDictionary.pickedWord;
+                anagramDictionary!.pickGoodStarterWord();
+                pickedWord = anagramDictionary!.pickedWord;
                 playAnswers = CupertinoIcons.question;
                 gameMode = Mode.start;
               }

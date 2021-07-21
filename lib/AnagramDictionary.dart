@@ -7,21 +7,11 @@ class AnagramDictionary{
   Set<String> wordSet = {};
   Map lettersToWord = {};
   Map sizeToWords ={};
-  String data = '';
   String pickedWord = "";
   int defaultWordLength = 4;
 
-
-  String sortLetters(String word){
-
-    List<String> wordCharacters = word.split('');
-    wordCharacters.sort();
-    return wordCharacters.join();
-  }
-
-  Future<void> getFileData(String path) async {
-    this.data = await rootBundle.loadString(path);
-    this.wordList = this.data.split('\n');
+  AnagramDictionary(String data){
+    this.wordList = data.split('\n');
     this.wordSet =  this.wordList.toSet();
     wordSet.forEach((String word) {
       String key = sortLetters(word);
@@ -37,10 +27,41 @@ class AnagramDictionary{
       }else{
         this.sizeToWords[wordSize].add(word);
       }
-
     });
-    
+    pickGoodStarterWord();
+
   }
+
+
+  String sortLetters(String word){
+
+    List<String> wordCharacters = word.split('');
+    wordCharacters.sort();
+    return wordCharacters.join();
+  }
+
+  // Future<void> getFileData(String path) async {
+  //   this.data = await rootBundle.loadString(path);
+  //   this.wordList = this.data.split('\n');
+  //   this.wordSet =  this.wordList.toSet();
+  //   wordSet.forEach((String word) {
+  //     String key = sortLetters(word);
+  //     if(!this.lettersToWord.containsKey(key)){
+  //       this.lettersToWord[key] = [word];
+  //     }else{
+  //       this.lettersToWord[key].add(word);
+  //     }
+  //
+  //     int wordSize = word.length;
+  //     if(!this.sizeToWords.containsKey(wordSize)){
+  //       this.sizeToWords[wordSize] = [word];
+  //     }else{
+  //       this.sizeToWords[wordSize].add(word);
+  //     }
+  //
+  //   });
+  //
+  // }
 
   List<String> getAnagrams(String word){
     String key = sortLetters(word);
@@ -71,11 +92,29 @@ class AnagramDictionary{
   pickGoodStarterWord(){
     List<String> words = sizeToWords[defaultWordLength];
     String word = '';
-    word = words[Random().nextInt(words.length)];
-    // while(word.length < 3 || word.length > 7){
-    //   word = wordList[Random().nextInt(wordList.length)];
-    // }
-    this.pickedWord = word;
+    int goodWordsNumber = 0;
+    while(goodWordsNumber < 2){
+      word = words[Random().nextInt(words.length)];
+      this.pickedWord = word;
+      goodWordsNumber = getGoodWordsNumber(word);
+    }
+
+
+    print(goodWordsNumber);
+  }
+
+  int getGoodWordsNumber(String word){
+    int goodWordsNumber = 0;
+    List<String> anagramsWithOneMoreLetter = getAnagramsWithOneMoreLetter(word);
+    print(anagramsWithOneMoreLetter);
+    anagramsWithOneMoreLetter.forEach((String word) {
+      if(isGoodWord(word)){
+        goodWordsNumber++;
+      }
+
+
+    });
+    return goodWordsNumber;
   }
 
 
