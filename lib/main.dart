@@ -69,51 +69,44 @@ class _AnagramGameState extends State<AnagramGame> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 1,
-              child: Text("Find as many words as possible "
-                  "that can be performed by adding one letter"
-                  "to ${pickedWord.toUpperCase()} ( but that no contain the substring $pickedWord "
-                  "Hit Play to start again"),
-            ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: TextField(
-                  controller: textControl,
-                  onEditingComplete: (){
-                    // String f = String.fromCharCode(97);
-                    setState(() {
-                      String word = textControl.text;
+            Text("Find as many words as possible "
+                "that can be performed by adding one letter"
+                "to ${pickedWord.toUpperCase()} ( but that no contain the substring $pickedWord "
+                "Hit Play to start again"),
+            Padding(
+              padding: EdgeInsets.only(bottom: 10),
+              child: TextField(
+                controller: textControl,
+                onEditingComplete: (){
+                  // String f = String.fromCharCode(97);
+                  setState(() {
+                    String word = textControl.text;
 
-                      if(anagramDictionary.isGoodWord(word)){
-                        wordsTyped.add(Text(word,
-                          style: TextStyle(
-                            color: Colors.green
-                          ),
-                        ));
-                      }else{
-                        wordsTyped.add(Text("X $word",
-                          style: TextStyle(
-                              color: Colors.red
-                          ),
-                        ));
-                      }
+                    if(anagramDictionary.isGoodWord(word)){
+                      wordsTyped.add(Text(word,
+                        style: TextStyle(
+                          color: Colors.green
+                        ),
+                      ));
+                    }else{
+                      wordsTyped.add(Text("X $word",
+                        style: TextStyle(
+                            color: Colors.red
+                        ),
+                      ));
+                    }
 
 
-                    });
-                    print(anagramDictionary.getAnagramsWithOneMoreLetter(pickedWord));
+                  });
 
-                    textControl.clear();
+                  textControl.clear();
 
 
-                  }
-                ),
+                }
               ),
             ),
             Expanded(
-              flex: 5,
+
               child: ListView.builder(
                 itemCount: wordsTyped.length,
                 itemBuilder: (BuildContext context, int index){

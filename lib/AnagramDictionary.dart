@@ -78,7 +78,7 @@ class AnagramDictionary{
       answerNumber = getAnswersNumber(word);
     }
 
-    print(answerNumber);
+
   }
 
   int getAnswersNumber(String word){
